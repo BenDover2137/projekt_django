@@ -15,7 +15,7 @@ class Zgloszenie(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.title} ({self.get_status_display()})"
+        return f"{self.title} {self.created_at} ({self.get_status_display()})"
 
 
 class Odpowiedz(models.Model):
@@ -26,3 +26,15 @@ class Odpowiedz(models.Model):
 
     def __str__(self):
         return f"{self.author.username} - {self.ticket.title}"
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    ROLE_CHOICES = [
+        ('user', 'Użytkownik'),
+        ('tech', 'Informatyk'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='user')
+
+    def is_informatyk(self):
+        return self.role == 'tech'
