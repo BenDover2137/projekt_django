@@ -12,7 +12,14 @@ class Zgloszenie(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='open')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,  related_name='autor')
+    wyb_zgloszenia = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='wyb_zgl',
+        limit_choices_to={'profile__role': 'tech'},
+    )
 
     def __str__(self):
         return f"{self.title} {self.created_at} ({self.get_status_display()})"
@@ -38,3 +45,4 @@ class Profile(models.Model):
 
     def is_informatyk(self):
         return self.role == 'tech'
+
